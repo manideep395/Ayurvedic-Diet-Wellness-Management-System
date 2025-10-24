@@ -1,28 +1,38 @@
-# Welcome to your Lovable project
+**Overview**
 
-## Project info
+A Vite + React + TypeScript app for Ayurvedic diet planning that combines practitioner 
+workflows, a searchable foods database with Ayurvedic attributes, and AI‑powered 
+personalized recommendations. 
 
-**URL**: https://lovable.dev/projects/3821f1c8-9a03-4e8b-80ed-5f08a18ac7b1
+ 
+**Core features & functionality **
 
-## How can I edit this code?
+- Patient management: create/edit/delete patient profiles with prakriti, health conditions, 
+preferences and lifestyle notes.
 
-There are several ways of editing your application.
+- Food database: searchable foods with nutrition + Ayurvedic attributes (rasa, guna, virya, 
+vipaka, dosha effects).
 
-**Use Lovable**
+- AI-powered recommendations: generate meal plans or dietary advice using a Supabase Edge 
+Function that calls Gemini.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3821f1c8-9a03-4e8b-80ed-5f08a18ac7b1) and start prompting.
+- Meal plan rendering: structured display and parsing of AI responses 
+ 
+- Data persistence: Postgres (Supabase) schema for patients, diet_charts, meal_plans, 
+recommendations and foods
 
-Changes made via Lovable will be committed automatically to this repo.
 
-**Use your preferred IDE**
+** Tech stack  **
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Frontend: Vite + React + TypeScript
+- Styling: Tailwind CSS with design tokens
+- UI primitives: Radix + shadcn-style components
+- Data & Auth: Supabase (Postgres + Auth + Edge Functions)
+- AI: Google Gemini via Supabase Edge Function
+- State & data fetching: React Query
+- Notifications: custom toast hook + UI
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
+  
 # Step 1: Clone the repository using the project's Git URL.
 git clone <YOUR_GIT_URL>
 
@@ -36,38 +46,3 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/3821f1c8-9a03-4e8b-80ed-5f08a18ac7b1) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
