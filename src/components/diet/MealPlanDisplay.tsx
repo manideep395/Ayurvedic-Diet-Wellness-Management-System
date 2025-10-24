@@ -144,7 +144,12 @@ export const MealPlanDisplay = ({ data }: MealPlanDisplayProps) => {
   // Handle both naming conventions
   const patientName = parsedData.patient_name || parsedData.patientName;
   const healthCondition = parsedData.health_condition || parsedData.healthCondition;
+  
+  // Handle health_conditions - can be array or string from AI
   const healthConditions = parsedData.health_conditions;
+  const healthConditionsDisplay = healthConditions 
+    ? (Array.isArray(healthConditions) ? healthConditions.join(", ") : String(healthConditions))
+    : healthCondition;
   
   console.log('Meal plan:', mealPlan);
   console.log('Dietary recommendations:', dietaryRecommendations);
@@ -209,13 +214,13 @@ export const MealPlanDisplay = ({ data }: MealPlanDisplayProps) => {
                 </div>
               </>
             )}
-            {(healthCondition || (healthConditions && healthConditions.length > 0)) && (
+            {healthConditionsDisplay && (
               <>
                 <Separator orientation="vertical" className="h-10" />
                 <div>
                   <p className="text-sm text-muted-foreground">Conditions</p>
                   <p className="text-lg font-semibold">
-                    {healthConditions?.join(", ") || healthCondition}
+                    {healthConditionsDisplay}
                   </p>
                 </div>
               </>
