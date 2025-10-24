@@ -139,7 +139,8 @@ export const MealPlanDisplay = ({ data }: MealPlanDisplayProps) => {
   }
 
   const mealPlan = parsedData.meal_plan;
-  const dietaryRecommendations = parsedData.dietaryRecommendations;
+  // Handle both snake_case and camelCase from AI
+  const dietaryRecommendations = (parsedData as any).dietary_recommendations || parsedData.dietaryRecommendations;
   
   // Handle both naming conventions
   const patientName = parsedData.patient_name || parsedData.patientName;
@@ -150,6 +151,20 @@ export const MealPlanDisplay = ({ data }: MealPlanDisplayProps) => {
   const healthConditionsDisplay = healthConditions 
     ? (Array.isArray(healthConditions) ? healthConditions.join(", ") : String(healthConditions))
     : healthCondition;
+  
+  // Normalize dietary recommendations to handle both snake_case and camelCase
+  const normalizedRecommendations = dietaryRecommendations?.map((rec: any) => ({
+    recommendationNumber: rec.recommendation_number || rec.recommendationNumber,
+    title: rec.title,
+    description: rec.description,
+    foodsToInclude: rec.foods_to_include || rec.foodsToInclude,
+    foodsToAvoid: rec.foods_to_avoid || rec.foodsToAvoid,
+    mealTiming: rec.meal_timing || rec.mealTiming,
+    recommendedBeverages: rec.recommended_beverages || rec.recommendedBeverages,
+    beveragesToAvoid: rec.beverages_to_avoid || rec.beveragesToAvoid,
+    ayurvedicPrinciples: rec.ayurvedic_principles || rec.ayurvedicPrinciples,
+    modernNutritionExplanation: rec.modern_nutrition_explanation || rec.modernNutritionExplanation,
+  }));
   
   console.log('Meal plan:', mealPlan);
   console.log('Dietary recommendations:', dietaryRecommendations);
@@ -230,9 +245,9 @@ export const MealPlanDisplay = ({ data }: MealPlanDisplayProps) => {
       </Card>
 
       {/* Dietary Recommendations */}
-      {dietaryRecommendations && dietaryRecommendations.length > 0 && (
+      {normalizedRecommendations && normalizedRecommendations.length > 0 && (
         <div className="space-y-4">
-          {dietaryRecommendations.map((rec, idx) => (
+          {normalizedRecommendations.map((rec, idx) => (
             <Card key={idx} className="border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
