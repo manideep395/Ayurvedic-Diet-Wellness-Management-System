@@ -53,15 +53,19 @@ All colors MUST be HSL.
     --gradient-warm: linear-gradient(135deg, hsl(43 90% 65%), hsl(32 75% 70%));
     --gradient-earth: linear-gradient(180deg, hsl(42 35% 96%), hsl(135 20% 92%));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(135 15% 98%));
+    --gradient-wellness: linear-gradient(135deg, hsl(135 40% 50%), hsl(174 52% 40%));
+    --gradient-nutrition: linear-gradient(135deg, hsl(32 90% 55%), hsl(43 90% 65%));
     
     /* Enhanced Shadows */
     --shadow-soft: 0 4px 20px -4px hsl(174 52% 30% / 0.18);
     --shadow-card: 0 2px 16px -2px hsl(0 0% 0% / 0.12);
     --shadow-elevated: 0 8px 32px -8px hsl(174 52% 30% / 0.2);
+    --shadow-glow: 0 0 30px -5px hsl(174 52% 40% / 0.3);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -117,10 +121,13 @@ All colors MUST be HSL.
     --gradient-warm: linear-gradient(135deg, hsl(43 85% 35%), hsl(32 55% 28%));
     --gradient-earth: linear-gradient(180deg, hsl(25 28% 9%), hsl(135 12% 14%));
     --gradient-card: linear-gradient(145deg, hsl(25 28% 11%), hsl(135 12% 15%));
+    --gradient-wellness: linear-gradient(135deg, hsl(135 40% 40%), hsl(174 52% 38%));
+    --gradient-nutrition: linear-gradient(135deg, hsl(32 85% 45%), hsl(43 85% 55%));
     
     --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.5);
     --shadow-card: 0 2px 16px -2px hsl(0 0% 0% / 0.4);
     --shadow-elevated: 0 8px 32px -8px hsl(0 0% 0% / 0.6);
+    --shadow-glow: 0 0 30px -5px hsl(174 52% 40% / 0.4);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;

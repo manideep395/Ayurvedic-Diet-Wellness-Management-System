@@ -102,10 +102,13 @@ export default {
         "gradient-hero": "var(--gradient-hero)",
         "gradient-warm": "var(--gradient-warm)",
         "gradient-earth": "var(--gradient-earth)",
+        "gradient-wellness": "var(--gradient-wellness)",
+        "gradient-nutrition": "var(--gradient-nutrition)",
       },
       boxShadow: {
         "soft": "var(--shadow-soft)",
         "card": "var(--shadow-card)",
+        "glow": "var(--shadow-glow)",
       },
     },
   },
