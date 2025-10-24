@@ -4,14 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Apple, FileText, LogOut, Plus } from "lucide-react";
+import { Users, Apple, FileText, LogOut, Plus, Sparkles, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ patients: 0, dietCharts: 0, foods: 0 });
+  const [stats, setStats] = useState({ patients: 0, dietCharts: 0, foods: 0, recommendations: 0 });
+  const [recentRecommendations, setRecentRecommendations] = useState<any[]>([]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -40,17 +42,36 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const [patientsRes, chartsRes, foodsRes] = await Promise.all([
+      const [patientsRes, chartsRes, foodsRes, recommendationsRes] = await Promise.all([
         (supabase as any).from("patients").select("id", { count: "exact", head: true }),
         (supabase as any).from("diet_charts").select("id", { count: "exact", head: true }),
-        (supabase as any).from("foods").select("id", { count: "exact", head: true })
+        (supabase as any).from("foods").select("id", { count: "exact", head: true }),
+        (supabase as any).from("recommendations").select("id", { count: "exact", head: true })
       ]);
 
       setStats({
         patients: patientsRes.count || 0,
         dietCharts: chartsRes.count || 0,
-        foods: foodsRes.count || 0
+        foods: foodsRes.count || 0,
+        recommendations: recommendationsRes.count || 0
       });
+
+      // Fetch recent recommendations
+      const { data: recentRecs } = await (supabase as any)
+        .from("recommendations")
+        .select(`
+          id,
+          recommendation_type,
+          created_at,
+          patients (
+            name,
+            prakriti
+          )
+        `)
+        .order("created_at", { ascending: false })
+        .limit(5);
+      
+      setRecentRecommendations(recentRecs || []);
     } catch (error) {
       console.error("Error fetching stats:", error);
     }
@@ -149,27 +170,91 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        <Card className="mt-8 shadow-card animate-fade-in">
-          <CardHeader>
-            <CardTitle>Quick Stats</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
-                <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">{stats.patients}</div>
-                <div className="text-sm text-muted-foreground font-medium">Active Patients</div>
+        <div className="grid gap-6 lg:grid-cols-2 mt-8 animate-fade-in">
+          <Card className="shadow-card">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  Quick Stats
+                </CardTitle>
               </div>
-              <div className="p-4 rounded-lg bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20">
-                <div className="text-3xl font-bold bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">{stats.dietCharts}</div>
-                <div className="text-sm text-muted-foreground font-medium">Diet Charts</div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 transition-all hover:shadow-soft">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">{stats.patients}</div>
+                  <div className="text-sm text-muted-foreground font-medium mt-1">Active Patients</div>
+                </div>
+                <div className="p-4 rounded-lg bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 transition-all hover:shadow-soft">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">{stats.recommendations}</div>
+                  <div className="text-sm text-muted-foreground font-medium mt-1">AI Recommendations</div>
+                </div>
+                <div className="p-4 rounded-lg bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20 transition-all hover:shadow-soft">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-secondary to-secondary/60 bg-clip-text text-transparent">{stats.dietCharts}</div>
+                  <div className="text-sm text-muted-foreground font-medium mt-1">Diet Charts</div>
+                </div>
+                <div className="p-4 rounded-lg bg-gradient-to-br from-kapha/10 to-kapha/5 border border-kapha/20 transition-all hover:shadow-soft">
+                  <div className="text-3xl font-bold bg-gradient-to-r from-kapha to-kapha/60 bg-clip-text text-transparent">{stats.foods}</div>
+                  <div className="text-sm text-muted-foreground font-medium mt-1">Food Items</div>
+                </div>
               </div>
-              <div className="p-4 rounded-lg bg-gradient-to-br from-secondary/10 to-secondary/5 border border-secondary/20">
-                <div className="text-3xl font-bold bg-gradient-to-r from-secondary to-secondary/60 bg-clip-text text-transparent">{stats.foods}</div>
-                <div className="text-sm text-muted-foreground font-medium">Food Items</div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-card">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-accent" />
+                  Recent AI Recommendations
+                </CardTitle>
+                <Button variant="ghost" size="sm" onClick={() => navigate("/diet-charts")}>
+                  View All
+                </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+              <CardDescription>Latest personalized diet plans</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {recentRecommendations.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Sparkles className="h-12 w-12 mx-auto mb-3 opacity-20" />
+                  <p className="text-sm">No recommendations yet</p>
+                  <Button variant="link" size="sm" onClick={() => navigate("/diet-charts")} className="mt-2">
+                    Generate Your First
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {recentRecommendations.map((rec) => (
+                    <div 
+                      key={rec.id} 
+                      className="flex items-center justify-between p-3 rounded-lg border border-border/50 hover:border-primary/30 hover:bg-muted/30 transition-colors cursor-pointer"
+                      onClick={() => navigate("/diet-charts")}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">
+                          {rec.patients?.name || "Unknown Patient"}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="secondary" className="text-xs">
+                            {rec.patients?.prakriti || "N/A"}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {rec.recommendation_type === "meal_plan" ? "Full Meal Plan" : "Dietary Advice"}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-xs text-muted-foreground ml-2 whitespace-nowrap">
+                        {new Date(rec.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   );

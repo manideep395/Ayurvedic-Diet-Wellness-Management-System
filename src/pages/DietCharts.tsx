@@ -83,6 +83,8 @@ const DietCharts = () => {
     }
 
     setLoading(true);
+    setRecommendation(""); // Clear previous recommendation
+    
     try {
       console.log('Calling AI recommendations for patient:', patientData);
       const { data, error } = await supabase.functions.invoke('ai-recommendations', {
@@ -95,30 +97,50 @@ const DietCharts = () => {
       console.log('AI Response:', data);
       console.log('AI Error:', error);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error from edge function:', error);
+        throw error;
+      }
 
       if (!data || !data.recommendation) {
+        console.error('No recommendation in response:', data);
         throw new Error('No recommendation data received from AI');
       }
 
       console.log('Setting recommendation:', data.recommendation);
+      console.log('Recommendation type:', typeof data.recommendation);
+      
+      // Set the recommendation immediately for display
       setRecommendation(data.recommendation);
       toast.success("AI recommendations generated successfully!");
 
-      // Save recommendation to database
-      const { error: dbError } = await (supabase as any).from("recommendations").insert({
-        patient_id: patientData.id,
-        recommendation_type: recommendationType,
-        content: { recommendation: data.recommendation },
-        priority: "medium"
-      });
+      // Save recommendation to database (non-blocking)
+      try {
+        const { error: dbError } = await (supabase as any).from("recommendations").insert({
+          patient_id: patientData.id,
+          recommendation_type: recommendationType,
+          content: { recommendation: data.recommendation },
+          priority: "medium"
+        });
 
-      if (dbError) {
-        console.error('Error saving to database:', dbError);
+        if (dbError) {
+          console.error('Error saving to database:', dbError);
+          toast.error("Recommendation generated but failed to save", { 
+            description: "The plan is visible but won't be stored" 
+          });
+        } else {
+          console.log('Successfully saved recommendation to database');
+        }
+      } catch (saveError) {
+        console.error('Exception saving to database:', saveError);
       }
     } catch (error) {
       console.error('Error generating recommendations:', error);
-      toast.error("Failed to generate recommendations. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      toast.error("Failed to generate recommendations", { 
+        description: errorMessage 
+      });
+      setRecommendation(""); // Clear any partial data
     } finally {
       setLoading(false);
     }
@@ -217,13 +239,16 @@ const DietCharts = () => {
 
         {recommendation && (
           <div className="animate-fade-in space-y-4">
-            <Card className="border-border/50 shadow-lg">
+            <Card className="border-primary/20 shadow-lg bg-gradient-to-br from-card to-muted/20">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>AI-Generated Recommendations</CardTitle>
-                    <CardDescription>
-                      Personalized diet plan based on Ayurvedic principles
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex-1">
+                    <CardTitle className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-accent" />
+                      AI-Generated Recommendations
+                    </CardTitle>
+                    <CardDescription className="mt-2">
+                      Personalized diet plan based on Ayurvedic principles for {patientData?.name}
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">

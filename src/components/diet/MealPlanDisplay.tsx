@@ -80,20 +80,44 @@ export const MealPlanDisplay = ({ data }: MealPlanDisplayProps) => {
   try {
     if (typeof data === 'string') {
       console.log('Parsing string data...');
-      // Try to extract JSON from markdown code blocks
-      const jsonMatch = data.match(/```json\s*([\s\S]*?)\s*```/);
-      const jsonString = jsonMatch ? jsonMatch[1].trim() : data.trim();
-      console.log('JSON string to parse:', jsonString.substring(0, 200) + '...');
-      parsedData = JSON.parse(jsonString);
+      // Remove markdown code blocks if present
+      let cleanData = data.trim();
+      
+      // Check for JSON code blocks
+      const jsonMatch = cleanData.match(/```json\s*([\s\S]*?)\s*```/);
+      if (jsonMatch) {
+        cleanData = jsonMatch[1].trim();
+      }
+      
+      // Check for plain code blocks
+      const codeMatch = cleanData.match(/```\s*([\s\S]*?)\s*```/);
+      if (codeMatch && !jsonMatch) {
+        cleanData = codeMatch[1].trim();
+      }
+      
+      console.log('Cleaned data to parse:', cleanData.substring(0, 200) + '...');
+      
+      try {
+        parsedData = JSON.parse(cleanData);
+      } catch (parseError) {
+        // If JSON parsing fails, try to find JSON-like content
+        const jsonStart = cleanData.indexOf('{');
+        const jsonEnd = cleanData.lastIndexOf('}');
+        if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+          const jsonContent = cleanData.substring(jsonStart, jsonEnd + 1);
+          parsedData = JSON.parse(jsonContent);
+        } else {
+          throw parseError;
+        }
+      }
     } else {
       console.log('Using data as object');
       parsedData = data;
     }
-    console.log('Parsed data:', parsedData);
+    console.log('Successfully parsed data:', parsedData);
   } catch (error) {
     console.error("Failed to parse recommendation:", error);
-    console.error("Raw data:", data);
-    console.error("Data length:", typeof data === 'string' ? data.length : 'N/A');
+    console.error("Raw data:", typeof data === 'string' ? data.substring(0, 500) : data);
     return (
       <Card className="border-destructive">
         <CardContent className="pt-6">
@@ -101,9 +125,11 @@ export const MealPlanDisplay = ({ data }: MealPlanDisplayProps) => {
             <p className="text-destructive font-semibold">Failed to parse recommendation data</p>
             <p className="text-sm text-muted-foreground">The AI response may be incomplete or malformed. Please try generating again.</p>
             <details className="text-xs">
-              <summary className="cursor-pointer">Show error details</summary>
-              <pre className="mt-2 p-2 bg-muted rounded overflow-auto max-h-40">
+              <summary className="cursor-pointer hover:text-foreground transition-colors">Show error details</summary>
+              <pre className="mt-2 p-2 bg-muted rounded overflow-auto max-h-40 text-[10px]">
                 {error instanceof Error ? error.message : String(error)}
+                {'\n\nPreview of raw data:\n'}
+                {typeof data === 'string' ? data.substring(0, 300) : JSON.stringify(data, null, 2).substring(0, 300)}
               </pre>
             </details>
           </div>
@@ -120,7 +146,25 @@ export const MealPlanDisplay = ({ data }: MealPlanDisplayProps) => {
   const healthCondition = parsedData.health_condition || parsedData.healthCondition;
   const healthConditions = parsedData.health_conditions;
   
-  if (!mealPlan && !dietaryRecommendations) return null;
+  console.log('Meal plan:', mealPlan);
+  console.log('Dietary recommendations:', dietaryRecommendations);
+  
+  if (!mealPlan && !dietaryRecommendations) {
+    return (
+      <Card className="border-orange-500/50">
+        <CardContent className="pt-6">
+          <p className="text-orange-600 dark:text-orange-400 font-semibold mb-2">No structured data found</p>
+          <p className="text-sm text-muted-foreground mb-4">The AI generated a response but it's not in the expected format.</p>
+          <details className="text-xs">
+            <summary className="cursor-pointer hover:text-foreground transition-colors">Show raw response</summary>
+            <pre className="mt-2 p-2 bg-muted rounded overflow-auto max-h-60 text-[10px]">
+              {JSON.stringify(parsedData, null, 2)}
+            </pre>
+          </details>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const mealSections = [
     { key: 'breakfast', title: 'Breakfast', icon: '🌅' },
