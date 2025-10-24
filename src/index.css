@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Enhanced Ayurvedic-inspired earth tones with professional healthcare feel */
+    --background: 42 35% 96%;
+    --foreground: 25 40% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 25 40% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 40% 12%;
+
+    /* Primary: Rich teal (professional healthcare) */
+    --primary: 174 52% 30%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Warm amber */
+    --secondary: 32 75% 92%;
+    --secondary-foreground: 32 70% 22%;
+
+    /* Muted: Soft sage with better contrast */
+    --muted: 135 20% 88%;
+    --muted-foreground: 135 25% 35%;
+
+    /* Accent: Vibrant golden */
+    --accent: 43 90% 65%;
+    --accent-foreground: 43 90% 15%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 135 18% 82%;
+    --input: 135 18% 85%;
+    --ring: 174 52% 40%;
+
+    --radius: 0.75rem;
+    
+    /* Enhanced Custom Ayurvedic tokens with better visibility */
+    --vata: 200 80% 42%;
+    --pitta: 18 88% 52%;
+    --kapha: 135 60% 40%;
+    
+    /* Enhanced Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(174 52% 28%), hsl(174 65% 42%));
+    --gradient-warm: linear-gradient(135deg, hsl(43 90% 65%), hsl(32 75% 70%));
+    --gradient-earth: linear-gradient(180deg, hsl(42 35% 96%), hsl(135 20% 92%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(135 15% 98%));
+    
+    /* Enhanced Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(174 52% 30% / 0.18);
+    --shadow-card: 0 2px 16px -2px hsl(0 0% 0% / 0.12);
+    --shadow-elevated: 0 8px 32px -8px hsl(174 52% 30% / 0.2);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 25 28% 9%;
+    --foreground: 42 45% 96%;
+
+    --card: 25 28% 11%;
+    --card-foreground: 42 45% 96%;
+
+    --popover: 25 28% 11%;
+    --popover-foreground: 42 45% 96%;
+
+    --primary: 174 55% 48%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 32 35% 18%;
+    --secondary-foreground: 42 45% 96%;
+
+    --muted: 135 12% 22%;
+    --muted-foreground: 135 15% 68%;
+
+    --accent: 43 85% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 135 12% 20%;
+    --input: 135 12% 18%;
+    --ring: 174 55% 58%;
+    
+    --vata: 200 78% 55%;
+    --pitta: 18 88% 65%;
+    --kapha: 135 60% 52%;
+    
+    --gradient-hero: linear-gradient(135deg, hsl(174 55% 32%), hsl(174 65% 48%));
+    --gradient-warm: linear-gradient(135deg, hsl(43 85% 35%), hsl(32 55% 28%));
+    --gradient-earth: linear-gradient(180deg, hsl(25 28% 9%), hsl(135 12% 14%));
+    --gradient-card: linear-gradient(145deg, hsl(25 28% 11%), hsl(135 12% 15%));
+    
+    --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.5);
+    --shadow-card: 0 2px 16px -2px hsl(0 0% 0% / 0.4);
+    --shadow-elevated: 0 8px 32px -8px hsl(0 0% 0% / 0.6);
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
